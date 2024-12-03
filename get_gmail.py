@@ -78,22 +78,25 @@ def should_exclude_email(sender, subject, body):
     return False
 
 
-def get_gmail():
+def get_gmail_objs():
 
     my_email_user = os.environ["GMAIL"]
     my_email_pass = os.environ["GMAIL_PASS"]
 
     mail = imaplib.IMAP4_SSL("imap.gmail.com", 993)
     mail.login(my_email_user, my_email_pass)
-    mail.select()
+    mail.select("Inbox")
 
 
-    status, messages = mail.search(None, "label", "important")
-    email_ids = messages[0].split()[:500]
+    status, messages = mail.search(None, "UNSEEN")
+    email_ids = messages[0].split()[:10]
+
+    print("Emails Retrieved")
 
     with open("./gmail_today.json", 'w') as f:
         if not email_ids:
             print("No unread emails found.")
+            return None
         else:
             # Loop through unread emails
             senders = []
@@ -131,13 +134,15 @@ def get_gmail():
                 except Exception:
                     continue
 
-            json.dump(jsonObjs, f, indent=4)
+            # json.dump(jsonObjs, f, indent=4)
 
             print(Counter(senders))
 
         # Close the connection and logout
         mail.close()
         mail.logout()
+
+        return jsonObjs
 
 
 if __name__ == "__main__":

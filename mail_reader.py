@@ -10,12 +10,12 @@ def clean_body(body):
     return re.sub(r'\n+\r+\t+', '. ', body)
 
 
-def mail_reader():
+def mail_reader(data):
     gmail_bodys = []
     gmail_subjs = []
     with open("gmail_today.json", 'r') as f:
-        data = json.load(f)
-        print(data)
+        # data = json.load(f)
+        # print(data)
 
         for obj in data:
             body = obj['Body']
@@ -27,15 +27,18 @@ def mail_reader():
         print("No Emails Found")
         exit()
 
-    summarizer = LLM()
+    summarizer = LLM(verbose=False, temperature=2)
     summaries = []
 
     for i in range(len(gmail_bodys)):
         print(f"Current Subject: {gmail_subjs[i]}")
 
         body = clean_body(gmail_bodys[i])
+        # print(body)
         full_input = f"Summarize this current email body: {body} and turn it into a slightly funny breaking news broadcast in under 3 sentences. Do not explain he context of the sayings, such as \"[Breaking news voice]\" and start it with \"BREAKING NEWS\""
         summaries.append({f"Email {i}": summarizer.prompt(full_input)})
+
+    return summaries
 
     with open("hehemail.json", "w") as f:
         json.dump(summaries, f, indent=4)

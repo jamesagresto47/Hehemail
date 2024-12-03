@@ -6,7 +6,7 @@ from datetime import datetime
 import time
 
 
-def mail_to_mp3():
+def mail_to_mp3(mail):
     # Initialize Engine
     engine = pyttsx3.init()
 
@@ -15,27 +15,35 @@ def mail_to_mp3():
     engine.setProperty('volume', 0.9)  # Volume
 
     # Get HeHeMail bodies
-    with open("hehemail.json", "r") as f:
-        mail = json.load(f)
+    # with open("hehemail.json", "r") as f:
+        # mail = json.load(f)
+    print()
+    print(mail)
 
-        today = datetime.today().strftime('%Y_%m_%d')
-        new_fold = f"C:/Users/jimbo/Code/Proj/HeheMail/output_hehemails/{today}"
-        if not os.path.exists(new_fold):
-            os.makedirs(new_fold)
+    today = datetime.today().strftime('%Y_%m_%d')
+    new_fold = f"./output_hehemails/{today}"
+    if not os.path.exists(new_fold):
+        os.makedirs(new_fold)
 
-        # Text you want to convert to audio
-        for i, m in enumerate(mail):
-            print(m)
-            mail_str = f"New Mail: {m[f"Email {i}"]}"
+    # Text you want to convert to audio
+    for i, m in enumerate(mail):
+        # print(m)
+        key = f"Email {i}"
+        mail_str = f"New Mail: {m[key]}"
 
-            # Save the speech to a .wav file
-            new_file = f'{new_fold}/hehemail_email_{i}.wav'
-            engine.save_to_file(mail_str, new_file)
+        # Save the speech to a .wav file
+        new_file = f'{new_fold}/hehemail_email_{i}.wav'
 
-            # Run the speech engine to process the file
-            engine.runAndWait()
+        # Run the speech engine to process the file
+        engine.runAndWait()
+        engine.save_to_file(mail_str, new_file)
 
-            add_background_music(new_file, "C:/Users/jimbo/Code/Proj/HeheMail/background.mp3")
+        while True:
+            try:
+                add_background_music("./background.mp3", new_file)
+                break
+            except FileNotFoundError:
+                continue
 
             
 
