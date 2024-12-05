@@ -1,6 +1,3 @@
-from transformers import pipeline
-from transformers import AutoTokenizer, AutoModelForCausalLM
-
 from onprem import LLM
 import re
 import json
@@ -27,7 +24,7 @@ def mail_reader(data):
         print("No Emails Found")
         exit()
 
-    summarizer = LLM(verbose=False, temperature=2)
+    summarizer = LLM(n_gpu_layers=-1, verbose=False, temperature=2)
     summaries = []
 
     for i in range(len(gmail_bodys)):
@@ -35,7 +32,7 @@ def mail_reader(data):
 
         body = clean_body(gmail_bodys[i])
         # print(body)
-        full_input = f"Summarize this current email body: {body} and turn it into a slightly funny breaking news broadcast in under 3 sentences. Do not explain he context of the sayings, such as \"[Breaking news voice]\" and start it with \"BREAKING NEWS\""
+        full_input = f"Pretend you are a news anchor covering a story. Summarize this current email body: {body} and turn it into a slightly funny breaking news broadcast in under 3 sentences. Do not explain he context of the sayings, such as \"[Breaking news voice]\" and start it with \"BREAKING NEWS\". Do not include hashtags, emoji, or anything else other than plaintext, and just act as if you were a news anchor."
         summaries.append({f"Email {i}": summarizer.prompt(full_input)})
 
     return summaries

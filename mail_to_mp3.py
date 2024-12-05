@@ -35,15 +35,10 @@ def mail_to_mp3(mail):
         new_file = f'{new_fold}/hehemail_email_{i}.wav'
 
         # Run the speech engine to process the file
-        engine.runAndWait()
         engine.save_to_file(mail_str, new_file)
+        engine.runAndWait()
 
-        while True:
-            try:
-                add_background_music("./background.mp3", new_file)
-                break
-            except FileNotFoundError:
-                continue
+        add_background_music("./background.mp3", new_file)
 
             
 

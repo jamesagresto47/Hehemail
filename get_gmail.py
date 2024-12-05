@@ -4,7 +4,6 @@ import re
 import json
 import os
 from collections import Counter
-from dotenv import load_dotenv
 
 EXCLUDED_SENDERS = ["LinkedIn <messages-noreply@linkedin.com>",
                     "LinkedIn <notifications-noreply@linkedin.com>", 
@@ -86,7 +85,6 @@ def get_gmail_objs():
     mail = imaplib.IMAP4_SSL("imap.gmail.com", 993)
     mail.login(my_email_user, my_email_pass)
     mail.select("Inbox")
-
 
     status, messages = mail.search(None, "UNSEEN")
     email_ids = messages[0].split()[:10]
